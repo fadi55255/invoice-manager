@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -10,4 +5,115 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model activity_logs {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  entity_type String   @db.VarChar(50)
+  entity_id   String   @db.Uuid
+  action      String   @db.VarChar(50)
+  actor_id    String?  @db.Uuid
+  actor_email String?  @db.VarChar(255)
+  actor_role  String?  @db.VarChar(30)
+  metadata    Json     @default("{}")
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([created_at(sort: Desc)], map: "idx_activity_logs_created_at")
+  @@index([entity_type, entity_id], map: "idx_activity_logs_entity")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model contacts {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type        String     @db.VarChar(20)
+  name        String     @db.VarChar(255)
+  email       String     @db.VarChar(255)
+  phone       String     @default("") @db.VarChar(50)
+  nif         String     @default("") @db.VarChar(100)
+  address     String     @default("")
+  city        String     @default("") @db.VarChar(120)
+  postal_code String     @default("") @db.VarChar(20)
+  is_archived Boolean    @default(false)
+  archived_at DateTime?  @db.Timestamptz(6)
+  created_by  String?    @db.Uuid
+  updated_by  String?    @db.Uuid
+  created_at  DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime   @default(now()) @db.Timestamptz(6)
+  invoices    invoices[]
+
+  @@index([city], map: "idx_contacts_city")
+  @@index([created_at(sort: Desc)], map: "idx_contacts_created_at")
+  @@index([is_archived], map: "idx_contacts_is_archived")
+  @@index([type], map: "idx_contacts_type")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model invoice_items {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoice_id  String   @db.Uuid
+  description String   @db.VarChar(500)
+  quantity    Decimal  @db.Decimal(12, 2)
+  unit_price  Decimal  @db.Decimal(12, 2)
+  tax_rate    Decimal  @default(19.00) @db.Decimal(5, 2)
+  line_total  Decimal? @default(dbgenerated("round((quantity * unit_price), 2)")) @db.Decimal(12, 2)
+  line_tax    Decimal? @default(dbgenerated("round(((round((quantity * unit_price), 2) * tax_rate) / 100.0), 2)")) @db.Decimal(12, 2)
+  sort_order  Int      @default(0)
+  invoices    invoices @relation(fields: [invoice_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([invoice_id], map: "idx_invoice_items_invoice_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model invoices {
+  id             String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  number         String          @unique @db.VarChar(40)
+  contact_id     String          @db.Uuid
+  direction      String          @db.VarChar(20)
+  issue_date     DateTime        @default(dbgenerated("CURRENT_DATE")) @db.Date
+  due_date       DateTime        @db.Date
+  subtotal       Decimal         @default(0.00) @db.Decimal(12, 2)
+  tax_total      Decimal         @default(0.00) @db.Decimal(12, 2)
+  total          Decimal         @default(0.00) @db.Decimal(12, 2)
+  paid_amount    Decimal         @default(0.00) @db.Decimal(12, 2)
+  balance        Decimal?        @default(dbgenerated("(total - paid_amount)")) @db.Decimal(12, 2)
+  status         String          @default("draft") @db.VarChar(20)
+  void_reason    String?
+  notes          String          @default("")
+  attachment_url String?
+  created_by     String?         @db.Uuid
+  updated_by     String?         @db.Uuid
+  created_at     DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime        @default(now()) @db.Timestamptz(6)
+  invoice_items  invoice_items[]
+  contacts       contacts        @relation(fields: [contact_id], references: [id], onUpdate: NoAction)
+  payments       payments[]
+
+  @@index([contact_id], map: "idx_invoices_contact_id")
+  @@index([direction], map: "idx_invoices_direction")
+  @@index([due_date], map: "idx_invoices_due_date")
+  @@index([issue_date(sort: Desc)], map: "idx_invoices_issue_date")
+  @@index([status], map: "idx_invoices_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model payments {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  invoice_id   String   @db.Uuid
+  amount       Decimal  @db.Decimal(12, 2)
+  payment_date DateTime @default(dbgenerated("CURRENT_DATE")) @db.Date
+  method       String   @default("virement") @db.VarChar(50)
+  reference    String   @default("") @db.VarChar(120)
+  notes        String   @default("")
+  recorded_by  String?  @db.Uuid
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+  invoices     invoices @relation(fields: [invoice_id], references: [id], onUpdate: NoAction)
+
+  @@index([invoice_id], map: "idx_payments_invoice_id")
 }

@@ -11,11 +11,11 @@ import {
 import { useAuth } from '../context/AuthContext';
 
 const navItems = [
-  { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
+  { label: 'Tableau de bord', to: '/dashboard', icon: LayoutDashboard },
   { label: 'Contacts', to: '/contacts', icon: Users },
-  { label: 'Invoices', to: '/invoices', icon: FileText },
-  { label: 'Payments', to: '/payments', icon: CreditCard },
-  { label: 'Users', to: '/users', icon: UserCog },
+  { label: 'Factures', to: '/invoices', icon: FileText },
+  { label: 'Paiements', to: '/payments', icon: CreditCard },
+  { label: 'Utilisateurs', to: '/users', icon: UserCog },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -51,7 +51,7 @@ export default function Sidebar({ isOpen, onClose }) {
             <button
               onClick={onClose}
               className="lg:hidden text-[#6B7280] hover:text-[#171717]"
-              aria-label="Close sidebar"
+              aria-label="Fermer le menu"
             >
               <X size={20} />
             </button>
@@ -91,7 +91,7 @@ export default function Sidebar({ isOpen, onClose }) {
           {user && (
             <div className="px-3 py-2.5 mb-2 rounded-[8px] bg-[#F5F5F7] border border-[#E5E7EB]">
               <p className="text-[13px] font-semibold text-[#171717] truncate">
-                {user.businessName || 'My Business'}
+                {user.businessName || 'Mon entreprise'}
               </p>
               <p className="text-[11px] font-medium text-[#897DF9] mt-0.5">
                 ID: {user.businessIdentifier || 'BIZ-8492'}
@@ -106,7 +106,7 @@ export default function Sidebar({ isOpen, onClose }) {
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-[14px] font-medium text-[#6B7280] hover:text-[#E57373] hover:bg-[#E57373]/10 transition-colors cursor-pointer"
           >
             <LogOut size={18} />
-            <span>Sign Out</span>
+            <span>Se déconnecter</span>
           </button>
         </div>
       </aside>
