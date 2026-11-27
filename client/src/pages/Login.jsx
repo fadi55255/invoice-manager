@@ -89,10 +89,20 @@ export default function Login() {
             </div>
           </div>
 
+          {/* Forgot Password Link (above Sign In button) */}
+          <div className="flex justify-center !mt-2">
+            <Link
+              to="/forgot-password"
+              className="text-[13px] font-medium text-[#897DF9] hover:text-[#7769E8]"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-[40px] mt-2 bg-[#897DF9] hover:bg-[#7769E8] disabled:opacity-60 text-white text-[14px] font-medium rounded-[8px] transition-colors cursor-pointer"
+            className="w-full h-[40px] bg-[#897DF9] hover:bg-[#7769E8] disabled:opacity-60 text-white text-[14px] font-medium rounded-[8px] transition-colors cursor-pointer"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -31,6 +32,7 @@ export default function App() {
           {/* Public Auth Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Protected App Routes with Sidebar */}
           <Route
@@ -73,6 +75,15 @@ export default function App() {
                 <PlaceholderPage
                   title="Payments"
                   subtitle="Record and monitor full or partial payments"
+                />
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                <PlaceholderPage
+                  title="Users & Membership"
+                  subtitle="Approve membership requests, manage roles, and share your Business Identifier"
                 />
               }
             />

@@ -4,6 +4,7 @@ import {
   Users,
   FileText,
   CreditCard,
+  UserCog,
   LogOut,
   X,
 } from 'lucide-react';
@@ -14,6 +15,7 @@ const navItems = [
   { label: 'Contacts', to: '/contacts', icon: Users },
   { label: 'Invoices', to: '/invoices', icon: FileText },
   { label: 'Payments', to: '/payments', icon: CreditCard },
+  { label: 'Users', to: '/users', icon: UserCog },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -84,14 +86,19 @@ export default function Sidebar({ isOpen, onClose }) {
           </nav>
         </div>
 
-        {/* User Footer & Logout */}
+        {/* Business Info, User Footer & Logout */}
         <div className="p-4 border-t border-[#E5E7EB]">
           {user && (
-            <div className="px-3 py-2 mb-2">
-              <p className="text-[13px] font-medium text-[#171717] truncate">
-                {user.name}
+            <div className="px-3 py-2.5 mb-2 rounded-[8px] bg-[#F5F5F7] border border-[#E5E7EB]">
+              <p className="text-[13px] font-semibold text-[#171717] truncate">
+                {user.businessName || 'My Business'}
               </p>
-              <p className="text-[12px] text-[#6B7280] truncate">{user.role}</p>
+              <p className="text-[11px] font-medium text-[#897DF9] mt-0.5">
+                ID: {user.businessIdentifier || 'BIZ-8492'}
+              </p>
+              <p className="text-[12px] text-[#6B7280] truncate mt-1.5 pt-1.5 border-t border-[#E5E7EB]">
+                {user.username} · {user.role}
+              </p>
             </div>
           )}
           <button
