@@ -1,3 +1,7 @@
+/**
+ * Sidebar.jsx — Responsive navigation sidebar displaying primary app routes,
+ * current business/user summary, and a logout button.
+ */
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,

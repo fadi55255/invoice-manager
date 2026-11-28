@@ -1,3 +1,7 @@
+/**
+ * Login.jsx — Public sign-in page allowing users to authenticate with email and password
+ * and redirecting to the dashboard upon success.
+ */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FileText, Mail, Lock, AlertCircle } from 'lucide-react';
@@ -17,7 +21,7 @@ export default function Login() {
     setError('');
 
     if (!email.trim() || !password.trim()) {
-      setError('Please enter both your email and password.');
+      setError('Veuillez saisir votre adresse e-mail et votre mot de passe.');
       return;
     }
 
@@ -26,7 +30,7 @@ export default function Login() {
       await login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Failed to sign in.');
+      setError(err.message || 'Échec de la connexion.');
     } finally {
       setLoading(false);
     }
@@ -40,9 +44,9 @@ export default function Login() {
           <div className="w-11 h-11 rounded-[10px] bg-[#EDECFC] flex items-center justify-center text-[#897DF9] mb-3">
             <FileText size={22} />
           </div>
-          <h1 className="text-[24px] font-semibold text-[#171717]">Welcome back</h1>
+          <h1 className="text-[24px] font-semibold text-[#171717]">Bon retour</h1>
           <p className="text-[14px] text-[#6B7280] mt-1">
-            Sign in to your Invoice Manager account
+            Connectez-vous à votre compte Invoice Manager
           </p>
         </div>
 
@@ -58,7 +62,7 @@ export default function Login() {
           {/* Email */}
           <div>
             <label className="block text-[13px] font-medium text-[#171717] mb-1.5">
-              Email Address
+              Adresse e-mail
             </label>
             <div className="relative">
               <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
@@ -66,7 +70,7 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@company.com"
+                placeholder="vous@entreprise.com"
                 className="w-full h-[40px] pl-9 pr-3 bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#171717] placeholder-[#9CA3AF] focus:outline-none focus:border-[#897DF9]"
               />
             </div>
@@ -75,7 +79,7 @@ export default function Login() {
           {/* Password */}
           <div>
             <label className="block text-[13px] font-medium text-[#171717] mb-1.5">
-              Password
+              Mot de passe
             </label>
             <div className="relative">
               <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
@@ -95,7 +99,7 @@ export default function Login() {
               to="/forgot-password"
               className="text-[13px] font-medium text-[#897DF9] hover:text-[#7769E8]"
             >
-              Forgot password?
+              Mot de passe oublié ?
             </Link>
           </div>
 
@@ -104,14 +108,14 @@ export default function Login() {
             disabled={loading}
             className="w-full h-[40px] bg-[#897DF9] hover:bg-[#7769E8] disabled:opacity-60 text-white text-[14px] font-medium rounded-[8px] transition-colors cursor-pointer"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? 'Connexion...' : 'Se connecter'}
           </button>
         </form>
 
         <p className="text-center text-[13px] text-[#6B7280] mt-6">
-          Don&apos;t have an account?{' '}
+          Vous n&apos;avez pas de compte ?{' '}
           <Link to="/register" className="text-[#897DF9] hover:text-[#7769E8] font-medium">
-            Create an account
+            Créer un compte
           </Link>
         </p>
       </div>

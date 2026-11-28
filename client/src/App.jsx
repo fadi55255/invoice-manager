@@ -1,3 +1,7 @@
+/**
+ * App.jsx — Root React application component configuring AuthProvider, React Router
+ * public/protected routes, and WorkspaceDataProvider (live API with mock fallback).
+ */
 import { createContext, useContext, useEffect, useState } from 'react';
 import {
   BrowserRouter,

@@ -1,3 +1,7 @@
+/**
+ * ForgotPassword.jsx — Public password reset request page where users submit
+ * their email address to receive reset instructions.
+ */
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Mail, ArrowLeft, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -13,7 +17,7 @@ export default function ForgotPassword() {
     setError('');
 
     if (!email.trim() || !email.includes('@')) {
-      setError('Please enter a valid email address.');
+      setError('Veuillez saisir une adresse e-mail valide.');
       return;
     }
 
@@ -33,11 +37,11 @@ export default function ForgotPassword() {
           <div className="w-11 h-11 rounded-[10px] bg-[#EDECFC] flex items-center justify-center text-[#897DF9] mb-3">
             <FileText size={22} />
           </div>
-          <h1 className="text-[24px] font-semibold text-[#171717]">Reset your password</h1>
+          <h1 className="text-[24px] font-semibold text-[#171717]">Réinitialiser votre mot de passe</h1>
           <p className="text-[14px] text-[#6B7280] mt-1">
             {submitted
-              ? 'Check your inbox for further instructions'
-              : "Enter your account email and we'll send you a reset link"}
+              ? 'Consultez votre boîte de réception pour la suite des instructions'
+              : "Saisissez l'adresse e-mail de votre compte et nous vous enverrons un lien de réinitialisation"}
           </p>
         </div>
 
@@ -46,10 +50,10 @@ export default function ForgotPassword() {
             <div className="p-4 rounded-[8px] bg-[#3C9F91]/10 border border-[#3C9F91]/30 flex items-start gap-3">
               <CheckCircle2 size={20} className="text-[#3C9F91] shrink-0 mt-0.5" />
               <div className="text-[13px] text-[#171717]">
-                <p className="font-medium">Reset link sent</p>
+                <p className="font-medium">Lien de réinitialisation envoyé</p>
                 <p className="text-[#6B7280] mt-1">
-                  If an account exists for <span className="font-medium text-[#171717]">{email}</span>,
-                  you will receive a password reset email shortly.
+                  Si un compte existe pour <span className="font-medium text-[#171717]">{email}</span>,
+                  vous recevrez sous peu un e-mail de réinitialisation du mot de passe.
                 </p>
               </div>
             </div>
@@ -62,7 +66,7 @@ export default function ForgotPassword() {
               }}
               className="w-full h-[40px] bg-white border border-[#E5E7EB] hover:bg-[#F5F5F7] text-[#171717] text-[14px] font-medium rounded-[8px] transition-colors cursor-pointer"
             >
-              Try another email
+              Essayer une autre adresse e-mail
             </button>
           </div>
         ) : (
@@ -77,7 +81,7 @@ export default function ForgotPassword() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-[13px] font-medium text-[#171717] mb-1.5">
-                  Email Address
+                  Adresse e-mail
                 </label>
                 <div className="relative">
                   <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
@@ -85,7 +89,7 @@ export default function ForgotPassword() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@company.com"
+                    placeholder="vous@entreprise.com"
                     className="w-full h-[40px] pl-9 pr-3 bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#171717] placeholder-[#9CA3AF] focus:outline-none focus:border-[#897DF9]"
                   />
                 </div>
@@ -96,7 +100,7 @@ export default function ForgotPassword() {
                 disabled={loading}
                 className="w-full h-[40px] mt-2 bg-[#897DF9] hover:bg-[#7769E8] disabled:opacity-60 text-white text-[14px] font-medium rounded-[8px] transition-colors cursor-pointer"
               >
-                {loading ? 'Sending link...' : 'Send Reset Link'}
+                {loading ? 'Envoi du lien...' : 'Envoyer le lien de réinitialisation'}
               </button>
             </form>
           </>
@@ -108,7 +112,7 @@ export default function ForgotPassword() {
             className="inline-flex items-center gap-1.5 text-[13px] font-medium text-[#6B7280] hover:text-[#171717]"
           >
             <ArrowLeft size={15} />
-            <span>Back to Sign In</span>
+            <span>Retour à la connexion</span>
           </Link>
         </div>
       </div>

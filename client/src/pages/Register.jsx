@@ -1,3 +1,7 @@
+/**
+ * Register.jsx — Public registration page supporting creating a new business
+ * (assigning Admin role) or requesting to join an existing business via its identifier.
+ */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -46,23 +50,23 @@ export default function Register() {
     setError('');
 
     if (!formData.username.trim() || !formData.email.trim() || !formData.password) {
-      setError('Please fill in your username, email, and password.');
+      setError("Veuillez renseigner votre nom d'utilisateur, votre adresse e-mail et votre mot de passe.");
       return;
     }
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters.');
+      setError('Le mot de passe doit contenir au moins 6 caractères.');
       return;
     }
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match.');
+      setError('Les mots de passe ne correspondent pas.');
       return;
     }
     if (mode === 'create' && !formData.businessName.trim()) {
-      setError('Please enter a name for your new business.');
+      setError('Veuillez saisir le nom de votre nouvelle entreprise.');
       return;
     }
     if (mode === 'join' && !formData.businessIdentifier.trim()) {
-      setError('Please enter the Business Identifier provided by your Admin.');
+      setError("Veuillez saisir l'identifiant d'entreprise fourni par votre administrateur.");
       return;
     }
 
@@ -75,7 +79,7 @@ export default function Register() {
         navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.message || 'Registration failed.');
+      setError(err.message || "Échec de l'inscription.");
     } finally {
       setLoading(false);
     }
@@ -90,29 +94,29 @@ export default function Register() {
             <Clock size={24} />
           </div>
           <h1 className="text-[22px] font-semibold text-[#171717]">
-            Membership Request Submitted
+            Demande d&apos;adhésion envoyée
           </h1>
           <p className="text-[14px] text-[#6B7280] mt-2 leading-relaxed">
-            Your request to join business{' '}
+            Votre demande pour rejoindre l&apos;entreprise{' '}
             <span className="font-semibold text-[#171717]">
               {pendingRequest.businessIdentifier}
             </span>{' '}
-            has been sent. You will gain access once an Admin approves your request and
-            assigns your role.
+            a été envoyée. Vous aurez accès dès qu&apos;un administrateur aura approuvé votre demande et
+            attribué votre rôle.
           </p>
 
           <div className="mt-6 p-3.5 rounded-[8px] bg-[#F5F5F7] border border-[#E5E7EB] text-left text-[13px] space-y-1">
             <div className="flex justify-between">
-              <span className="text-[#6B7280]">Username:</span>
+              <span className="text-[#6B7280]">Nom d&apos;utilisateur :</span>
               <span className="font-medium text-[#171717]">{pendingRequest.username}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#6B7280]">Email:</span>
+              <span className="text-[#6B7280]">E-mail :</span>
               <span className="font-medium text-[#171717]">{pendingRequest.email}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#6B7280]">Status:</span>
-              <span className="font-medium text-[#F28B65]">Pending Approval</span>
+              <span className="text-[#6B7280]">Statut :</span>
+              <span className="font-medium text-[#F28B65]">En attente d&apos;approbation</span>
             </div>
           </div>
 
@@ -121,7 +125,7 @@ export default function Register() {
               to="/login"
               className="w-full h-[40px] bg-[#897DF9] hover:bg-[#7769E8] text-white text-[14px] font-medium rounded-[8px] flex items-center justify-center transition-colors"
             >
-              Return to Sign In
+              Retour à la connexion
             </Link>
             <button
               type="button"
@@ -129,7 +133,7 @@ export default function Register() {
               className="w-full h-[38px] text-[13px] font-medium text-[#6B7280] hover:text-[#171717] inline-flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <ArrowLeft size={14} />
-              <span>Back to Registration</span>
+              <span>Retour à l&apos;inscription</span>
             </button>
           </div>
         </div>
@@ -145,9 +149,9 @@ export default function Register() {
           <div className="w-11 h-11 rounded-[10px] bg-[#EDECFC] flex items-center justify-center text-[#897DF9] mb-3">
             <FileText size={22} />
           </div>
-          <h1 className="text-[24px] font-semibold text-[#171717]">Create an account</h1>
+          <h1 className="text-[24px] font-semibold text-[#171717]">Créer un compte</h1>
           <p className="text-[14px] text-[#6B7280] mt-1">
-            Set up a new business or join an existing workspace
+            Configurez une nouvelle entreprise ou rejoignez un espace existant
           </p>
         </div>
 
@@ -162,7 +166,7 @@ export default function Register() {
                 : 'text-[#6B7280] hover:text-[#171717]'
             }`}
           >
-            Create New Business
+            Créer une entreprise
           </button>
           <button
             type="button"
@@ -173,7 +177,7 @@ export default function Register() {
                 : 'text-[#6B7280] hover:text-[#171717]'
             }`}
           >
-            Join Existing Business
+            Rejoindre une entreprise
           </button>
         </div>
 
@@ -188,7 +192,7 @@ export default function Register() {
           {/* Username */}
           <div>
             <label className="block text-[13px] font-medium text-[#171717] mb-1.5">
-              Username
+              Nom d&apos;utilisateur
             </label>
             <div className="relative">
               <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
@@ -206,7 +210,7 @@ export default function Register() {
           {/* Email */}
           <div>
             <label className="block text-[13px] font-medium text-[#171717] mb-1.5">
-              Email Address
+              Adresse e-mail
             </label>
             <div className="relative">
               <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
@@ -215,7 +219,7 @@ export default function Register() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="alex@company.com"
+                placeholder="alex@entreprise.com"
                 className="w-full h-[40px] pl-9 pr-3 bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#171717] placeholder-[#9CA3AF] focus:outline-none focus:border-[#897DF9]"
               />
             </div>
@@ -225,7 +229,7 @@ export default function Register() {
           {mode === 'create' ? (
             <div>
               <label className="block text-[13px] font-medium text-[#171717] mb-1.5">
-                Business Name
+                Nom de l&apos;entreprise
               </label>
               <div className="relative">
                 <Building2
@@ -237,18 +241,18 @@ export default function Register() {
                   name="businessName"
                   value={formData.businessName}
                   onChange={handleChange}
-                  placeholder="Acme Studio LLC"
+                  placeholder="Ma Société SARL"
                   className="w-full h-[40px] pl-9 pr-3 bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#171717] placeholder-[#9CA3AF] focus:outline-none focus:border-[#897DF9]"
                 />
               </div>
               <p className="text-[12px] text-[#6B7280] mt-1">
-                You will automatically become the first Admin of this business.
+                Vous deviendrez automatiquement le premier administrateur de cette entreprise.
               </p>
             </div>
           ) : (
             <div>
               <label className="block text-[13px] font-medium text-[#171717] mb-1.5">
-                Business Identifier
+                Identifiant d&apos;entreprise
               </label>
               <div className="relative">
                 <KeyRound
@@ -260,12 +264,12 @@ export default function Register() {
                   name="businessIdentifier"
                   value={formData.businessIdentifier}
                   onChange={handleChange}
-                  placeholder="e.g. BIZ-8492"
+                  placeholder="ex. BIZ-8492"
                   className="w-full h-[40px] pl-9 pr-3 bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#171717] placeholder-[#9CA3AF] uppercase focus:outline-none focus:border-[#897DF9]"
                 />
               </div>
               <p className="text-[12px] text-[#6B7280] mt-1">
-                Ask your business Admin for this unique identifier. Access requires Admin approval.
+                Demandez cet identifiant unique à l&apos;administrateur de votre entreprise. L&apos;accès nécessite son approbation.
               </p>
             </div>
           )}
@@ -273,7 +277,7 @@ export default function Register() {
           {/* Password */}
           <div>
             <label className="block text-[13px] font-medium text-[#171717] mb-1.5">
-              Password
+              Mot de passe
             </label>
             <div className="relative">
               <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
@@ -282,7 +286,7 @@ export default function Register() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="At least 6 characters"
+                placeholder="Au moins 6 caractères"
                 className="w-full h-[40px] pl-9 pr-3 bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#171717] placeholder-[#9CA3AF] focus:outline-none focus:border-[#897DF9]"
               />
             </div>
@@ -291,7 +295,7 @@ export default function Register() {
           {/* Confirm Password */}
           <div>
             <label className="block text-[13px] font-medium text-[#171717] mb-1.5">
-              Confirm Password
+              Confirmer le mot de passe
             </label>
             <div className="relative">
               <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
@@ -300,7 +304,7 @@ export default function Register() {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                placeholder="Repeat password"
+                placeholder="Répétez le mot de passe"
                 className="w-full h-[40px] pl-9 pr-3 bg-white border border-[#E5E7EB] rounded-[8px] text-[14px] text-[#171717] placeholder-[#9CA3AF] focus:outline-none focus:border-[#897DF9]"
               />
             </div>
@@ -312,17 +316,17 @@ export default function Register() {
             className="w-full h-[40px] mt-2 bg-[#897DF9] hover:bg-[#7769E8] disabled:opacity-60 text-white text-[14px] font-medium rounded-[8px] transition-colors cursor-pointer"
           >
             {loading
-              ? 'Submitting...'
+              ? 'Envoi en cours...'
               : mode === 'create'
-              ? 'Create Business & Account'
-              : 'Request to Join Business'}
+              ? "Créer l'entreprise et le compte"
+              : "Demander à rejoindre l'entreprise"}
           </button>
         </form>
 
         <p className="text-center text-[13px] text-[#6B7280] mt-6">
-          Already have an account?{' '}
+          Vous avez déjà un compte ?{' '}
           <Link to="/login" className="text-[#897DF9] hover:text-[#7769E8] font-medium">
-            Sign in
+            Se connecter
           </Link>
         </p>
       </div>
