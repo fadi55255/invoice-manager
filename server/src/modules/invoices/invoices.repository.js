@@ -1,8 +1,13 @@
-import { query } from '../../config/pool.js';
+import { pool, query } from '../../config/pool.js';
+import { nextInvoiceNumber } from './invoice.numbering.js';
 import { INVOICE_STATUS_METADATA } from '../../shared/invoiceStatuses.js';
 
 function toIsoDate(val) {
-  if (val instanceof Date) return val.toISOString().slice(0, 10);
+  if (val instanceof Date) {
+    // Local date parts: toISOString() would shift the day back in Algeria.
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${val.getFullYear()}-${pad(val.getMonth() + 1)}-${pad(val.getDate())}`;
+  }
   return String(val).slice(0, 10);
 }
 
@@ -35,6 +40,56 @@ const SORT_COLUMNS = {
 };
 
 export const invoicesRepository = {
+  async createDraft(data, userId) {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      // The contact must exist, be active and match the invoice direction.
+      const contactType = data.direction === 'achat' ? 'fournisseur' : 'client';
+      const contact = await client.query(
+        'SELECT id FROM contacts WHERE id = $1 AND type = $2 AND is_archived = FALSE',
+        [data.contactId, contactType]
+      );
+      if (contact.rowCount === 0) {
+        await client.query('ROLLBACK');
+        return null;
+      }
+
+      const number = await nextInvoiceNumber(client, data.direction, data.issueDate);
+
+      // "balance" is computed by the database.
+      const { rows } = await client.query(
+        `INSERT INTO invoices
+           (number, contact_id, direction, issue_date, due_date, status,
+            subtotal, tax_total, total, notes, created_by, updated_by)
+         VALUES ($1, $2, $3, $4, $5, 'draft', $6, $7, $8, $9, $10, $10)
+         RETURNING id`,
+        [number, data.contactId, data.direction, data.issueDate, data.dueDate,
+          data.subtotal, data.tax, data.total, data.notes, userId]
+      );
+      const id = rows[0].id;
+
+      // "line_total" and "line_tax" are computed by the database.
+      for (const [index, item] of data.items.entries()) {
+        await client.query(
+          `INSERT INTO invoice_items
+             (invoice_id, description, quantity, unit_price, tax_rate, sort_order)
+           VALUES ($1, $2, $3, $4, $5, $6)`,
+          [id, item.description.trim(), item.quantity, item.unitPrice, item.taxRate, index]
+        );
+      }
+
+      await client.query('COMMIT');
+      return { id, number };
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
+  },
+
   async syncOverdueStatuses() {
     const result = await query(
       `UPDATE invoices

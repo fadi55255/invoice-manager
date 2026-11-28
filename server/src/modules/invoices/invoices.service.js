@@ -1,8 +1,41 @@
 import { INVOICE_STATUS_METADATA } from '../../shared/invoiceStatuses.js';
 import { AppError } from '../../shared/errors.js';
 import { invoicesRepository } from './invoices.repository.js';
+import { validateInvoice } from './invoice.validation.js';
+import { computeInvoice } from './invoice.calculations.js';
+import { logActivity } from '../activity-logs/activityLog.js';
 
 export const invoicesService = {
+  async createInvoice(body, user) {
+    const { errors, isValid } = validateInvoice(body);
+    if (!isValid) {
+      throw new AppError(400, 'Certains champs sont invalides.', 'VALIDATION_ERROR', errors);
+    }
+
+    // Totals are always recalculated here; totals sent by the browser are ignored.
+    const { subtotal, tax, total } = computeInvoice(body.items);
+
+    const created = await invoicesRepository.createDraft(
+      { ...body, notes: (body.notes || '').trim(), subtotal, tax, total },
+      user.id
+    );
+    if (!created) {
+      throw new AppError(400, 'Certains champs sont invalides.', 'VALIDATION_ERROR', {
+        contactId: 'Contact introuvable ou inadapté.',
+      });
+    }
+
+    await logActivity({
+      entityType: 'invoice',
+      entityId: created.id,
+      action: 'created',
+      actor: user,
+      metadata: { number: created.number, total },
+    });
+
+    return invoicesRepository.findByIdWithDetails(created.id);
+  },
+
   async listInvoices(filters) {
     await invoicesRepository.syncOverdueStatuses();
     return invoicesRepository.list(filters);

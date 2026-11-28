@@ -10,6 +10,15 @@ export const invoicesRouter = Router();
 
 invoicesRouter.use(authenticate);
 
+invoicesRouter.post('/', requireRole('admin', 'accountant'), async (req, res, next) => {
+  try {
+    const invoice = await invoicesService.createInvoice(req.body, req.user);
+    res.status(201).json({ data: invoice });
+  } catch (err) {
+    next(err);
+  }
+});
+
 invoicesRouter.get(
   '/statuses',
   requireRole('admin', 'accountant', 'viewer'),
